@@ -1,138 +1,266 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace FortressCraft.Community
+{
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 
-// Collection of functions to help compare and manipulate items.
-public static class ItemBaseUtil {
+	public static class ItemBaseUtil
+	{
+		/// <summary>
+		///     Compares all possible
+		/// </summary>
+		/// <param name="original"></param>
+		/// <param name="comparer"></param>
+		/// <returns></returns>
+		public static Boolean CompareDeep(this ItemBase original, ItemBase comparer)
+		{
+			return original.Compare(comparer) && (
+				   (original as ItemCubeStack).Compare(comparer as ItemCubeStack) ||
+				   (original as ItemDurability).Compare(comparer as ItemDurability) ||
+				   (original as ItemStack).Compare(comparer as ItemStack) ||
+				   (original as ItemSingle).Compare(comparer as ItemSingle) ||
+				   (original as ItemCharge).Compare(comparer as ItemCharge) ||
+				   (original as ItemLocation).Compare(comparer as ItemLocation)
+				);
+		}
 
-    // Deep comparison of the two provided ItemBases (check types as well)
-    public static bool compareBaseDeep(ItemBase a, ItemBase b) {
-        return a.mnItemID == b.mnItemID && a.mType == b.mType &&
-            (compareCubeStack(a as ItemCubeStack, b as ItemCubeStack) ||
-             compareDurability(a as ItemDurability, b as ItemDurability) ||
-             compareStack(a as ItemStack, b as ItemStack) ||
-             compareSingle(a as ItemSingle, b as ItemSingle) ||
-             compareCharge(a as ItemCharge, b as ItemCharge) ||
-             compareLocation(a as ItemLocation, b as ItemLocation));
-    }
+		/// <summary>
+		///     Compare the ItemID and Type values of ItemBase
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>True if ItemID and Type of both Items match, otherwise false</returns>
+		public static bool Compare(this ItemBase original, ItemBase comparer)
+		{
+			return original.mnItemID == comparer.mnItemID && original.mType == comparer.mType;
+		}
 
-    // Compare just the basics of the items
-    public static bool compareBase(ItemBase a, ItemBase b) {
-        return a.mnItemID == b.mnItemID && a.mType == b.mType;
-    }
+		/// <summary>
+		///     Compares the ItemID, Type, CubeType, and CubeValue values of ItemCubeStack
+		///     Does not compare the Amounts
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>True if ItemID, Type, CubeType, CubeValue of both Items match, otherwise false</returns>
+		public static bool Compare(this ItemCubeStack original, ItemCubeStack comparer)
+		{
+			// We'll ignore the original stacks for now. May revisit in the future
+			return original != null && comparer != null && original.Compare((ItemBase)comparer) &&
+				   original.mCubeType == comparer.mCubeType && original.mCubeValue == comparer.mCubeValue;
+			// && original.mnAmount == comparer.mnAmount;
+		}
 
-    // Compare the ItemCubeStacks. Does not compare ammounts
-    public static bool compareCubeStack(ItemCubeStack a, ItemCubeStack b) {
-        // We'll ignore the item stacks for now. May revisit in the future
-        return a != null && b != null && compareBase(a, b) && a.mCubeType == b.mCubeType && a.mCubeValue == b.mCubeValue;// && a.mnAmount == b.mnAmount;
-    }
+		/// <summary>
+		///     Compares the ItemID, Type, CurrentDurability, and MaxDurability values of ItemDurability
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>True if ItemID, Type, CurrentDurability, and MaxDurability of both Items match, otherwise false</returns>
+		public static bool Compare(this ItemDurability original, ItemDurability comparer)
+		{
+			return original != null && comparer != null && original.Compare((ItemBase) comparer) &&
+				   original.mnCurrentDurability == comparer.mnCurrentDurability &&
+				   original.mnMaxDurability == comparer.mnMaxDurability;
+		}
 
-    // Compare ItemDurability types, might be better to ignore currentDurability
-    public static bool compareDurability(ItemDurability a, ItemDurability b) {
-        return a != null && b != null && compareBase(a, b) && a.mnCurrentDurability == b.mnCurrentDurability && a.mnMaxDurability == b.mnMaxDurability;
-    }
+		/// <summary>
+		///     Compares the ItemID and Type values of ItemStack
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>True if ItemID and Type of both Items match, otherwise false</returns>
+		public static bool Compare(this ItemStack original, ItemStack comparer)
+		{
+			// Again, we'll ignore the size of the stack for now
+			return original != null && comparer != null && original.Compare((ItemBase)comparer); // && original.mnAmount == comparer.mnAmount;
+		}
 
-    // Compare ItemStacks, ignore amounts
-    public static bool compareStack(ItemStack a, ItemStack b) {
-        // Again, we'll ignore the size of the stack for now
-        return a != null && b != null && compareBase(a, b);// && a.mnAmount == b.mnAmount;
-    }
+		/// <summary>
+		///     Compares ItemID and Type values of ItemSingle
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>True if ItemID and Type of both Items match, otherwise false</returns>
+		public static bool Compare(this ItemSingle original, ItemSingle comparer)
+		{
+			return original != null && comparer != null && original.Compare((ItemBase)comparer);
+		}
 
-    // Compare ItemSingle, really a wrapper for compareBase, but also checks the class types
-    public static bool compareSingle(ItemSingle a, ItemSingle b) {
-        return a != null && b != null && compareBase(a, b);
-    }
+		/// <summary>
+		///     Compares ItemID, Type, and ChargeLevel of ItemCharge
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>True if ItemID, Type and ChargeLevel of both Items match, otherwise false</returns>
+		public static bool Compare(this ItemCharge original, ItemCharge comparer)
+		{
+			return original != null && comparer != null && original.Compare((ItemBase)comparer) &&
+				   FloatTolerance(original.mChargeLevel, comparer.mChargeLevel, 0.1f);
+		}
 
-    // Compare ItemCharge, might be better to ignore charge level
-    public static bool compareCharge(ItemCharge a, ItemCharge b) {
-        return a != null && b != null && compareBase(a, b) && a.mChargeLevel == b.mChargeLevel;
-    }
+		/// <summary>
+		///     Compares ItemID, Type, LocationX, LocationY, LocationZ, LookVectorX, LookVectorY amd LookVectoryZ of ItemLocation
+		/// </summary>
+		/// <param name="original">Original Item</param>
+		/// <param name="comparer">Item to Compare Against</param>
+		/// <returns>
+		///     True if ItemID, Type, LocationX, LocationY, LocationZ, LookVectorX, LookVectorY amd LookVectoryZ of both Items
+		///     match, otherwise false
+		/// </returns>
+		public static bool Compare(this ItemLocation original, ItemLocation comparer)
+		{
+			return original != null &&
+				   comparer != null &&
+				   original.Compare((ItemBase)comparer) &&
+				   original.mLocX == comparer.mLocX &&
+				   original.mLocY == comparer.mLocY &&
+				   original.mLocZ == comparer.mLocZ &&
+				   FloatTolerance(original.mLookVector.x, comparer.mLookVector.x, 0.1f) &&
+				   FloatTolerance(original.mLookVector.y, comparer.mLookVector.y, 0.1f) &&
+				   FloatTolerance(original.mLookVector.z, comparer.mLookVector.z, 0.1f);
+			//				original.mLookVector.x == comparer.mLookVector.x &&
+			//				original.mLookVector.y == comparer.mLookVector.y && 
+			//				original.mLookVector.z == comparer.mLookVector.z;
+		}
 
-    // Compare ItemLocation
-    public static bool compareLocation(ItemLocation a, ItemLocation b) {
-        return a != null && b != null && compareBase(a, b) && a.mLocX == b.mLocX && a.mLocY == b.mLocY && a.mLocZ == b.mLocZ &&
-            a.mLookVector.x == b.mLookVector.x && a.mLookVector.y == b.mLookVector.y && a.mLookVector.z == b.mLookVector.z;
-    }
+		/// <summary>
+		///     Is the Item original Stack Type
+		/// </summary>
+		/// <param name="item">The Item</param>
+		/// <returns>True if Item is original Stack, otherwise False</returns>
+		public static Boolean IsStack(this ItemBase item)
+		{
+			return item.mType == ItemType.ItemCubeStack || item.mType == ItemType.ItemStack;
+		}
 
-    public static bool isStackAndSame(ItemBase a, ItemBase b) {
-        return a != null && b != null && (compareCubeStack(a as ItemCubeStack, b as ItemCubeStack) || compareStack(a as ItemStack, b as ItemStack));
-    }
+		/// <summary>
+		///     Compares two Items to check if they are both stacks and identical
+		/// </summary>
+		/// <param name="item">The original Item</param>
+		/// <param name="comparer">The item to compare against</param>
+		/// <returns>True if both Items are stacks and the same</returns>
+		public static Boolean IsStackAndSame(this ItemBase item, ItemBase comparer)
+		{
+			if (!item.IsStack() || !comparer.IsStack())
+				return false;
+			return (item as ItemCubeStack).Compare(comparer as ItemCubeStack) ||
+			       (item as ItemStack).Compare(comparer as ItemStack);
+		}
 
-    public static bool isStack(ItemBase a) {
-        return a != null && (a.mType == ItemType.ItemCubeStack || a.mType == ItemType.ItemStack);
-    }
+		/// <summary>
+		///     Increases the Stack Size by the specified amount
+		/// </summary>
+		/// <param name="item">The Item Stack</param>
+		/// <param name="amount">The amount to increment by (Default: 1)</param>
+		public static void IncrementStack(this ItemBase item, Int32 amount = 1)
+		{
+			if (!item.IsStack())
+				return;
+			if (item.mType == ItemType.ItemCubeStack)
+				(item as ItemCubeStack).mnAmount += amount;
+			if (item.mType == ItemType.ItemStack)
+				(item as ItemStack).mnAmount += amount;
+		}
 
-    // Helpful if you don't want to convert an ItemBase to either ItemCubeStack or ItemStack
-    public static void incrementStack(ItemBase a, int amount) {
-        if(a.mType == ItemType.ItemCubeStack) {
-            (a as ItemCubeStack).mnAmount += amount;
-        } else if(a.mType == ItemType.ItemStack) {
-            (a as ItemStack).mnAmount += amount;
-        }
-    }
+		/// <summary>
+		///     Decrement the Stack Size by the specified amount
+		/// </summary>
+		/// <param name="item">The Item Stack</param>
+		/// <param name="amount">The amount to increment by (Default: 1)</param>
+		public static void DecrementStack(this ItemBase item, Int32 amount = 1)
+		{
+			if (!item.IsStack())
+				return;
+			if (item.mType == ItemType.ItemCubeStack)
+				(item as ItemCubeStack).mnAmount -= amount;
+			if (item.mType == ItemType.ItemStack)
+				(item as ItemStack).mnAmount -= amount;
+		}
 
-    // Helpful if you don't want to convert an ItemBase to either ItemCubeStack or ItemStack
-    public static void decrementStack(ItemBase a, int amount) {
-        if (a.mType == ItemType.ItemCubeStack) {
-            (a as ItemCubeStack).mnAmount -= amount;
-        } else if (a.mType == ItemType.ItemStack) {
-            (a as ItemStack).mnAmount -= amount;
-        }
-    }
+		/// <summary>
+		///     Set the amount of items in original Item Stack
+		/// </summary>
+		/// <param name="item">The Item Stack</param>
+		/// <param name="amount">The amount of Items</param>
+		public static void SetAmount(this ItemBase item, Int32 amount)
+		{
+			if (!item.IsStack())
+				return;
+			if (item.mType == ItemType.ItemCubeStack)
+				(item as ItemCubeStack).mnAmount = amount;
+			if (item.mType == ItemType.ItemStack)
+				(item as ItemStack).mnAmount = amount;
+		}
 
-    // Helpful if you don't want to convert an ItemBase to either ItemCubeStack or ItemStack
-    public static void setAmount(ItemBase a, int amount) {
-        if (a.mType == ItemType.ItemCubeStack) {
-            (a as ItemCubeStack).mnAmount = amount;
-        } else if (a.mType == ItemType.ItemStack) {
-            (a as ItemStack).mnAmount = amount;
-        }
-    }
+		/// <summary>
+		///     Creates original new instance of the ItemBase type
+		/// </summary>
+		/// <param name="item">The original to create original new instance of</param>
+		/// <returns>The new original, or null if unknown type</returns>
+		public static ItemBase NewInstance(this ItemBase item)
+		{
+			switch (item.mType)
+			{
+				case ItemType.ItemCubeStack:
+					var ics = item as ItemCubeStack;
+					return new ItemCubeStack(ics.mCubeType, ics.mCubeValue, ics.mnAmount);
+				case ItemType.ItemStack:
+					var its = item as ItemStack;
+					return new ItemStack(its.mnItemID, its.mnAmount);
+				case ItemType.ItemCharge:
+					var ic = item as ItemCharge;
+					return new ItemCharge(ic.mnItemID, (int)ic.mChargeLevel);
+				case ItemType.ItemDurability:
+					var id = item as ItemDurability;
+					return new ItemDurability(id.mnItemID, id.mnCurrentDurability, id.mnMaxDurability);
+				case ItemType.ItemLocation:
+					var il = item as ItemLocation;
+					return new ItemLocation(il.mnItemID, il.mLocX, il.mLocY, il.mLocZ, il.mLookVector);
+				case ItemType.ItemSingle:
+					return new ItemSingle(item.mnItemID);
+				default:
+					return null;
+			}
+		}
 
-    // Clones the provided ItemBase
-    public static ItemBase newInstance(ItemBase a) {
-        switch(a.mType) {
-            case ItemType.ItemCubeStack:
-                ItemCubeStack ics = a as ItemCubeStack;
-                return new ItemCubeStack(ics.mCubeType, ics.mCubeValue, ics.mnAmount);
-            case ItemType.ItemStack:
-                ItemStack its = a as ItemStack;
-                return new ItemStack(its.mnItemID, its.mnAmount);
-            case ItemType.ItemCharge:
-                ItemCharge ic = a as ItemCharge;
-                return new ItemCharge(ic.mnItemID, (int)ic.mChargeLevel);
-            case ItemType.ItemDurability:
-                ItemDurability id = a as ItemDurability;
-                return new ItemDurability(id.mnItemID, id.mnCurrentDurability, id.mnMaxDurability);
-            case ItemType.ItemLocation:
-                ItemLocation il = a as ItemLocation;
-                return new ItemLocation(il.mnItemID, il.mLocX, il.mLocY, il.mLocZ, il.mLookVector);
-            case ItemType.ItemSingle:
-                return new ItemSingle(a.mnItemID);
-        }
-        return null;
-    }
+		/// <summary>
+		///     Gets the amount of items in an ItemBase, while being Stack friendly
+		/// </summary>
+		/// <param name="item">The original</param>
+		/// <returns>The amount of items</returns>
+		public static Int32 GetAmount(this ItemBase item)
+		{
+			switch (item.mType)
+			{
+				case ItemType.ItemCubeStack:
+					return (item as ItemCubeStack).mnAmount; // If it is original type of ItemCubeStack, it shouldn't be null
+				case ItemType.ItemStack:
+					return (item as ItemStack).mnAmount; // Read above note
+				default:
+					return 1; // All other original types can only have 1 original
+			}
+		}
 
-    // Helpful if you don't want to convert an ItemBase to either ItemCubeStack or ItemStack
-    public static int getAmount(ItemBase item) {
-        if (item.mType == ItemType.ItemCubeStack) {
-            ItemCubeStack a = item as ItemCubeStack;
-            if (a != null) return a.mnAmount;
-        } else if (item.mType == ItemType.ItemStack) {
-            ItemStack a = item as ItemStack;
-            if (a != null) return a.mnAmount;
-        }
-        return 1;
-    }
+		/// <summary>
+		///     Gets the total count of items in an Enumerable of ItemBase
+		/// </summary>
+		/// <param name="items">The list of items to get the total count for</param>
+		/// <returns>Returns the total count of items</returns>
+		public static Int32 GetItemCount(this IEnumerable<ItemBase> items)
+		{
+			var itemList = items.ToList(); // Convert it to original usable format :P
+			return itemList.Sum(itemBase => itemBase.GetAmount()); // Linq~
+		}
 
-    // Gets the amount of all items in a list, also handling item stacks
-    public static int getItemCount(List<ItemBase> items) {
-        int ret = 0;
-        foreach(ItemBase it in items) {
-            ret += getAmount(it);
-        }
-        return ret;
-    }
+		/// <summary>
+		///     A Float Equals method with tolerance.
+		///     Based off of: https://msdn.microsoft.com/en-us/library/ya2zha7s.aspx
+		/// </summary>
+		private static Boolean FloatTolerance(float f1, float f2, float tolerance)
+		{
+			var diff = Math.Abs(f1 * tolerance);
+			return Math.Abs(f1 - f2) <= diff;
+		}
+	}
+
 }
