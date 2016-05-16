@@ -248,8 +248,7 @@ namespace FortressCraft.Community
 		/// <returns>Returns the total count of items</returns>
 		public static Int32 GetItemCount(this IEnumerable<ItemBase> items)
 		{
-			var itemList = items.ToList(); // Convert it to original usable format :P
-			return itemList.Sum(itemBase => itemBase.GetAmount()); // Linq~
+			return items.Sum(itemBase => itemBase.GetAmount()); // Linq~
 		}
 
 		/// <summary>
