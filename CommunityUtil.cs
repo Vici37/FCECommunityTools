@@ -7,6 +7,19 @@ using System.Threading.Tasks;
 // A collection of static methods that don't really belong anywhere
 public class CommunityUtil {
 
+    /// <summary>
+    ///     Checks the N/E/S/W/Up/Down directions of the Center block for any SegmentEntitys of T;
+    ///     Will report whether there was a failure because a segment wasn't loaded.
+    /// </summary>
+    /// <typeparam name="T">The SegmentEntity class to search for.</typeparam>
+    /// <param name="center">The MachineEntity to Search Around</param>
+    /// <param name="encounteredNullSegments">Whether or not a Null Segment was Encountered</param>
+    /// <returns></returns>
+    public static List<T> CheckSurrondings<T>(this MachineEntity center, out Boolean encounteredNullSegments) where T : SegmentEntity
+    {
+        return checkSurrounding<T>(center, out encounteredNullSegments);
+    }
+
     // Used to get all items of a specific type around the provided machine entity.
     // Will report whether there was a failure because a segment wasn't loaded.
     //
@@ -32,10 +45,9 @@ public class CommunityUtil {
                     encounteredNullSegment = true;
                     continue;
                 }
-                Object tmcm = segment.SearchEntity(x, y, z) as Object;
-                if (tmcm != null && tmcm is T) {
-                    ret.Add((T)tmcm);
-                }
+                T tmcm = segment.SearchEntity(x, y, z) as T;
+                if (tmcm != null)
+                    ret.Add(tmcm);
             }
         }
 
