@@ -242,24 +242,59 @@ namespace FortressCraft.Community
 		}
 
 		/// <summary>
-		///     Gets the total count of items in an Enumerable of ItemBase
+		///		Gets the amount of items and cubes in any type of Enumerable ItemBase
 		/// </summary>
-		/// <param name="items">The list of items to get the total count for</param>
-		/// <returns>Returns the total count of items</returns>
+		/// <param name="items">The list of items to get the total count from</param>
+		/// <returns>The amount of Items and Cubes</returns>
 		public static Int32 GetItemCount(this IEnumerable<ItemBase> items)
 		{
-			return items.Sum(itemBase => itemBase.GetAmount()); // Linq~
+			return items.Sum(itemBase => itemBase.GetAmount());
 		}
 
 		/// <summary>
-		///     A Float Equals method with tolerance.
-		///     Based off of: https://msdn.microsoft.com/en-us/library/ya2zha7s.aspx
+		///		Gets the amount of items in any type of Enumerable ItemBase
 		/// </summary>
-		private static Boolean FloatTolerance(float f1, float f2, float tolerance)
+		/// <param name="items">The list of items to get the total count from</param>
+		/// <param name="itemId">The unique id of the item to count</param>
+		/// <returns>The amount of Items</returns>
+		public static Int32 GetItemCount(this IEnumerable<ItemBase> items, Int32 itemId)
 		{
-			var diff = Math.Abs(f1 * tolerance);
-			return Math.Abs(f1 - f2) <= diff;
+			return items.Where(item => item.mnItemID == itemId).Sum(item => item.GetAmount());
 		}
+
+		/// <summary>
+		///		Gets the amount of cubes in any type of Enumerable ItemBase
+		/// </summary>
+		/// <param name="items"></param>
+		/// <param name="cubeId"></param>
+		/// <param name="cubeValue"></param>
+		/// <returns>The amount of Cubes</returns>
+		public static Int32 GetItemCount(this IEnumerable<ItemBase> items, UInt16 cubeId, UInt16 cubeValue)
+		{
+			return items.Where(item =>
+			{
+				var cube = item as ItemCubeStack;
+				if (cube == null)
+					return false;
+				return cube.mCubeType == cubeId && cube.mCubeValue == cubeValue;
+			}).Sum(item => item.GetAmount());
+		}
+
+		/// <summary>
+		///		Gets the amount of cubes OR items from any Enumerable ItemBase, based off of an ItemBase
+		/// </summary>
+		/// <param name="items">The list of items to get the total count from</param>
+		/// <param name="restraints">The ItemBase which to restrain the Count to</param>
+		/// <returns>The amount of Cubes or Items</returns>
+		public static Int32 GetItemCount(this IEnumerable<ItemBase> items, ItemBase restraints)
+		{
+			if (restraints.mType != ItemType.ItemCubeStack)
+				return items.GetItemCount(restraints.mnItemID);
+
+			var cube = restraints as ItemCubeStack;
+			return items.GetItemCount(cube.mCubeType, cube.mCubeValue);
+		}
+		
 	}
 
 }
