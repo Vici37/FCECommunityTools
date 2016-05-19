@@ -294,6 +294,16 @@ namespace FortressCraft.Community
 			var cube = restraints as ItemCubeStack;
 			return items.GetItemCount(cube.mCubeType, cube.mCubeValue);
 		}
+
+		/// <summary>
+		///     A Float Equals method with tolerance.
+		///     Based off of: https://msdn.microsoft.com/en-us/library/ya2zha7s.aspx
+		/// </summary>
+		private static Boolean FloatTolerance(float f1, float f2, float tolerance)
+		{
+			var diff = Math.Abs(f1 * tolerance);
+			return Math.Abs(f1 - f2) <= diff;
+		}
 		
 	}
 
