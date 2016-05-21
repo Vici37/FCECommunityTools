@@ -7,6 +7,12 @@
 	/// </summary>
 	public interface CommunityItemInterface
 	{
+        /// <summary>
+        ///         Checks to see if a Storage Medium has any item
+        /// </summary>
+        /// <returns>True if the storage medium has any item, false otherwise</returns>
+        Boolean HasItem();
+
 		///  <summary>
 		/// 		Checks to see if a Storage Medium has the specified item.
 		///  
@@ -39,6 +45,12 @@
 		/// <param name="item">The Item to give to a Storage Medium</param>
 		/// <returns>True if the Storage Medium accepted the item, otherwise false</returns>
 		Boolean GiveItem(ItemBase item);
+
+        /// <summary>
+        ///     Attempt to take any item from a Storage Medium
+        /// </summary>
+        /// <returns>An ItemBase of an item the Storage Medium had, otherwise null</returns>
+        ItemBase TakeItem();
 
 		/// <summary>
 		///		Attempts to take an Item from a Storage Medium

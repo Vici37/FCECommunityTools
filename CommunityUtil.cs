@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 // A collection of static methods that don't really belong anywhere
-public class CommunityUtil {
+public static class CommunityUtil {
 
     /// <summary>
     ///     Checks the N/E/S/W/Up/Down directions of the Center block for any SegmentEntitys of T;
@@ -26,7 +26,7 @@ public class CommunityUtil {
     // Example Usage:
     // bool encounteredNullSegment;
     // List<CoveyorEntity> conveyorBelts = CommunityUtil.checkSurrounding<ConveyorEntity>(this, encounteredNullSegment);
-    public static List<T> checkSurrounding<T>(MachineEntity center, out bool encounteredNullSegment) {
+    public static List<T> checkSurrounding<T>(MachineEntity center, out bool encounteredNullSegment) where T : SegmentEntity {
         List<T> ret = new List<T>();
         long[] coords = new long[3];
         encounteredNullSegment = false;

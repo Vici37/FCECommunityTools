@@ -19,7 +19,8 @@ namespace FortressCraft.Community
 			_supportedTypes = new List<Type>
 			{
 				typeof(StorageHopper),
-				typeof(CommunityItemInterface)
+				typeof(CommunityItemInterface),
+                typeof(ConveyorEntity)
 			}.AsReadOnly();
 		}
 		
@@ -30,6 +31,11 @@ namespace FortressCraft.Community
 
 			return entity is CommunityItemInterface ? typeof (CommunityItemInterface) : null;
 		}
+
+        public static Boolean HasItem(SegmentEntity entity) 
+        {
+            return HasItem(entity, null);
+        }
 
 		///  <summary>
 		/// 		Checks to see if a Storage Medium has the specified item.
@@ -64,6 +70,14 @@ namespace FortressCraft.Community
 			if (type == typeof (CommunityItemInterface))
 			{
 				var newEntity = entity as CommunityItemInterface;
+
+                if (item == null) 
+                {
+                    // make amount = 1 so that we pass the bool check in HasItem(entity, item)
+                    amount = 1;
+                    return newEntity.HasItem();
+                }
+
 				return newEntity.HasItems(item, out amount);
 			}
 
@@ -76,6 +90,13 @@ namespace FortressCraft.Community
 			if (type == typeof (StorageHopper))
 			{
 				var newEntity = entity.As<StorageHopper>();
+
+                if (item == null) 
+                {
+                    amount = newEntity.mnStorageUsed;
+                    return amount > 0;
+                }
+
 				if (!isCube)
 				{
 					amount = newEntity.CountHowManyOfItem(item.mnItemID);
@@ -91,6 +112,32 @@ namespace FortressCraft.Community
 				amount = newEntity.CountHowManyOfType(cube.mCubeType, cube.mCubeValue);
 				return amount > 0;
 			}
+
+            if (type == typeof (ConveyorEntity)) 
+            {
+                var newEntity = entity.As<ConveyorEntity>();
+
+                if (item == null && (newEntity.mCarriedCube != 0 || newEntity.mCarriedItem != null)) 
+                {
+                    // make amount = 1 so we pass the amount > 1 check in HasItem(entity, item)
+                    amount = 1;
+                    return true;
+                }
+
+                if (!isCube) 
+                {
+                    if(newEntity.mCarriedCube == cube.mCubeType && newEntity.mCarriedValue == cube.mCubeValue) {
+                        amount = 1;
+                        return true;
+                    }
+                }
+
+                if (item.Compare(newEntity.mCarriedItem)) 
+                {
+                    amount = 1;
+                    return true;
+                }
+            }
 			
 			return false;
 		}
@@ -114,6 +161,12 @@ namespace FortressCraft.Community
 				var newEntity = entity.As<StorageHopper>();
 				return newEntity.mnStorageFree >= amount;
 			}
+
+            if (type == typeof (ConveyorEntity) && amount == 1) 
+            {
+                var newEntity = entity.As<ConveyorEntity>();
+                return newEntity.mbReadyToConvey && newEntity.mrLockTimer == 0f;
+            }
 
 			return false;
 		}
@@ -149,6 +202,22 @@ namespace FortressCraft.Community
 				return currentStorage != newEntity.mnStorageFree;
 			}
 
+            if(type == typeof (ConveyorEntity)) 
+            {
+                var newEntity = entity.As<ConveyorEntity>();
+                if (newEntity.mbReadyToConvey) 
+                {
+                    if (isCube) 
+                    {
+                        newEntity.AddCube(cube.mCubeType, cube.mCubeValue, 1);
+                        return true;
+                    }
+
+                    newEntity.AddItem(item);
+                    return true;
+                }
+            }
+
 			return false;
 		}
 
@@ -159,7 +228,7 @@ namespace FortressCraft.Community
 			if (type == null)
 				return null;
 
-			if (type == typeof(CommunityItemInterface))
+			if (type == typeof (CommunityItemInterface))
 			{
 				var newEntity = entity as CommunityItemInterface;
 				return newEntity.TakeItem(item);
@@ -178,6 +247,28 @@ namespace FortressCraft.Community
 					return newEntity.RemoveSingleSpecificItemByID(item.mnItemID);
 				return newEntity.RemoveSingleSpecificCubeStack(cube);
 			}
+
+            // Conveyor Entities will return whatever item they're carrying, regardless of the item passed in
+            if (type == typeof (ConveyorEntity)) 
+            {
+                var newEntity = entity.As<ConveyorEntity>();
+                if (!newEntity.mbReadyToConvey && newEntity.mrLockTimer == 0f) 
+                {
+                    ItemBase ret = null;
+                    if (newEntity.mCarriedItem == null) 
+                    {
+                        ret = new ItemCubeStack(newEntity.mCarriedCube, newEntity.mCarriedValue, 1);
+                    }
+                    else 
+                    {
+                        ret = newEntity.mCarriedItem;
+                    }
+                    newEntity.RemoveCube();
+                    newEntity.RemoveItem();
+                    newEntity.FinaliseOffloadingCargo();
+                    return ret;
+                }
+            }
 
 			return null;
 		}
