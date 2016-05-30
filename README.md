@@ -12,6 +12,7 @@ Clone this repo (or just download it), and copy the FCECommunityTools.dll into t
 
 # CommunityItemInterface
 Provides the following functions:
+
     Boolean HasItems();
     Boolean HasItems();
     Boolean HasItem(ItemBase item);
