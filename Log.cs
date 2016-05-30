@@ -42,7 +42,6 @@ namespace FortressCraft.Community
 			{
 				if (this._queue.Count == 0)
 				{
-					Console.WriteLine("Sleeping");
 					Thread.Sleep(200);
 					continue;
 				}
@@ -52,7 +51,6 @@ namespace FortressCraft.Community
 				{
 					while (this._queue.Count != 0 && (item = this._queue.Dequeue()) != default(LogData))
 					{
-						Console.WriteLine(this._queue.Count);
 						stream.WriteLine($"[{item.Severity}] {item.Time} - {item.Message}");
 					}
 				}
