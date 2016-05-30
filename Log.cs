@@ -166,8 +166,9 @@ namespace FortressCraft.Community
 
 		/// <summary>
 		///		A Simple Thread-Safe Queue usings Locks
+		///		
+		///		Stripped down version of: https://gist.github.com/jaredjenkins/5421892
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		internal class LockingQueue<T>
 		{
 			private readonly object syncLock = new object();
