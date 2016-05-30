@@ -7,14 +7,14 @@
 	/// </summary>
 	public interface CommunityItemInterface
 	{
-        /// <summary>
-        ///         Checks to see if a Storage Medium has any item
-        /// </summary>
-        /// <returns>True if the storage medium has any item, false otherwise</returns>
-        Boolean HasItem();
+		/// <summary>
+		///		Checks to see if a Storage Medium has any items
+		/// </summary>
+		/// <returns>True if the storage medium has any item, false otherwise</returns>
+		Boolean HasItems();
 
 		///  <summary>
-		/// 		Checks to see if a Storage Medium has the specified item.
+		/// 		Checks to see if a Storage Medium has the specified item
 		///  
 		/// 		Checks for Ore/Item/Cube
 		///  </summary>
@@ -23,7 +23,7 @@
 		Boolean HasItem(ItemBase item);
 
 		///  <summary>
-		/// 		Checks to see if a Storage Medium has the specified item.
+		/// 		Checks to see if a Storage Medium has the specified item
 		///  
 		/// 		Checks for Ore/Item/Cube
 		///  </summary>
@@ -37,7 +37,13 @@
 		/// </summary>
 		/// <param name="amount">The amount of capcity to check for</param>
 		/// <returns>True if the storage medium has <c>amount</c> capacity free, otherwise false</returns>
-		Boolean HasCapcity(UInt32 amount);
+		Boolean HasFreeSpace(UInt32 amount);
+
+		/// <summary>
+		///		Get the free capcity of the entity
+		/// </summary>
+		/// <returns>The free capcity of the entity</returns>
+		Int32 GetFreeSpace();
 
 		/// <summary>
 		///		Attempts to give the Item to a Storage Medium
@@ -46,12 +52,6 @@
 		/// <returns>True if the Storage Medium accepted the item, otherwise false</returns>
 		Boolean GiveItem(ItemBase item);
 
-        /// <summary>
-        ///     Attempt to take any item from a Storage Medium
-        /// </summary>
-        /// <returns>An ItemBase of an item the Storage Medium had, otherwise null</returns>
-        ItemBase TakeItem();
-
 		/// <summary>
 		///		Attempts to take an Item from a Storage Medium
 		/// </summary>
@@ -59,12 +59,10 @@
 		/// <returns>An ItemBase if the requested Item was found, otherwise null</returns>
 		ItemBase TakeItem(ItemBase item);
 
-		/// <summary>
-		///		Attempts to take an Item from a Storage Medium based off of Item Id / Cube Id + Value
-		/// </summary>
-		/// <param name="id">Item or Cube Id</param>
-		/// <param name="value">Cube Value</param>
-		/// <returns>An ItemBase if the requested Item was found, otherwise null</returns>
-		ItemBase TakeItem(UInt16 id, UInt16? value = null);
+        /// <summary>
+        ///     Attempts to take any item from a Storage Medium
+        /// </summary>
+        /// <returns>An ItemBase if there's something to return, or null if empty</returns>
+        ItemBase TakeAnyItem();
 	}
 }
