@@ -2,6 +2,9 @@ namespace FortressCraft.Community
 {
 	using UnityEngine;
 
+	/// <summary>
+	///		Extension Methods and Helpers for the GameObject class
+	/// </summary>
 	public static class GameObjectUtil
 	{
 		private static readonly GameObject[] _allObjects;
@@ -16,7 +19,7 @@ namespace FortressCraft.Community
 
 		/// <summary>
 		///		Gets a GameObject from the Resources
-		///		Originally created by binaryalgorithm & steveman0
+		///		Originally created by binaryalgorithm &amp; steveman0
 		/// </summary>
 		/// <param name="name">The Name of the GameObject to retrieve</param>
 		/// <returns>The named GameObject, or null</returns>

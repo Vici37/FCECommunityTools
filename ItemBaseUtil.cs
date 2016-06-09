@@ -4,23 +4,26 @@ namespace FortressCraft.Community
 	using System.Collections.Generic;
 	using System.Linq;
 
+	/// <summary>
+	///		Extension Methods and Helpers for the ItemBase Class
+	/// </summary>
 	public static class ItemBaseUtil
 	{
 		/// <summary>
 		///     Compares all possible
 		/// </summary>
-		/// <param name="original"></param>
-		/// <param name="comparer"></param>
-		/// <returns></returns>
+		/// <param name="original">The original ItemBase</param>
+		/// <param name="comparer">The ItemBase to Compare Against</param>
+		/// <returns>True if all major properties match</returns>
 		public static Boolean CompareDeep(this ItemBase original, ItemBase comparer)
 		{
 			return original.Compare(comparer) && (
-				   (original as ItemCubeStack).Compare(comparer as ItemCubeStack) ||
-				   (original as ItemDurability).Compare(comparer as ItemDurability) ||
-				   (original as ItemStack).Compare(comparer as ItemStack) ||
-				   (original as ItemSingle).Compare(comparer as ItemSingle) ||
-				   (original as ItemCharge).Compare(comparer as ItemCharge) ||
-				   (original as ItemLocation).Compare(comparer as ItemLocation)
+				   original.As<ItemCubeStack>().Compare(comparer.As<ItemCubeStack>()) ||
+				   original.As<ItemDurability>().Compare(comparer.As<ItemDurability>()) ||
+				   original.As<ItemStack>().Compare(comparer.As<ItemStack>()) ||
+				   original.As<ItemSingle>().Compare(comparer.As<ItemSingle>()) ||
+				   original.As<ItemCharge>().Compare(comparer.As<ItemCharge>()) ||
+				   original.As<ItemLocation>().Compare(comparer.As<ItemLocation>())
 				);
 		}
 
@@ -45,7 +48,7 @@ namespace FortressCraft.Community
 		public static bool Compare(this ItemCubeStack original, ItemCubeStack comparer)
 		{
 			// We'll ignore the original stacks for now. May revisit in the future
-			return original != null && comparer != null && original.Compare((ItemBase)comparer) &&
+			return original != null && comparer != null && original.Compare(comparer.As<ItemBase>()) &&
 				   original.mCubeType == comparer.mCubeType && original.mCubeValue == comparer.mCubeValue;
 			// && original.mnAmount == comparer.mnAmount;
 		}
@@ -58,7 +61,7 @@ namespace FortressCraft.Community
 		/// <returns>True if ItemID, Type, CurrentDurability, and MaxDurability of both Items match, otherwise false</returns>
 		public static bool Compare(this ItemDurability original, ItemDurability comparer)
 		{
-			return original != null && comparer != null && original.Compare((ItemBase) comparer) &&
+			return original != null && comparer != null && original.Compare(comparer.As<ItemBase>()) &&
 				   original.mnCurrentDurability == comparer.mnCurrentDurability &&
 				   original.mnMaxDurability == comparer.mnMaxDurability;
 		}
@@ -72,7 +75,7 @@ namespace FortressCraft.Community
 		public static bool Compare(this ItemStack original, ItemStack comparer)
 		{
 			// Again, we'll ignore the size of the stack for now
-			return original != null && comparer != null && original.Compare((ItemBase)comparer); // && original.mnAmount == comparer.mnAmount;
+			return original != null && comparer != null && original.Compare(comparer.As<ItemBase>()); // && original.mnAmount == comparer.mnAmount;
 		}
 
 		/// <summary>
@@ -83,7 +86,7 @@ namespace FortressCraft.Community
 		/// <returns>True if ItemID and Type of both Items match, otherwise false</returns>
 		public static bool Compare(this ItemSingle original, ItemSingle comparer)
 		{
-			return original != null && comparer != null && original.Compare((ItemBase)comparer);
+			return original != null && comparer != null && original.Compare(comparer.As<ItemBase>());
 		}
 
 		/// <summary>
@@ -94,7 +97,7 @@ namespace FortressCraft.Community
 		/// <returns>True if ItemID, Type and ChargeLevel of both Items match, otherwise false</returns>
 		public static bool Compare(this ItemCharge original, ItemCharge comparer)
 		{
-			return original != null && comparer != null && original.Compare((ItemBase)comparer) &&
+			return original != null && comparer != null && original.Compare(comparer.As<ItemBase>()) &&
 				   FloatTolerance(original.mChargeLevel, comparer.mChargeLevel, 0.1f);
 		}
 
@@ -111,7 +114,7 @@ namespace FortressCraft.Community
 		{
 			return original != null &&
 				   comparer != null &&
-				   original.Compare((ItemBase)comparer) &&
+				   original.Compare(comparer.As<ItemBase>()) &&
 				   original.mLocX == comparer.mLocX &&
 				   original.mLocY == comparer.mLocY &&
 				   original.mLocZ == comparer.mLocZ &&
@@ -143,8 +146,8 @@ namespace FortressCraft.Community
 		{
 			if (!item.IsStack() || !comparer.IsStack())
 				return false;
-			return (item as ItemCubeStack).Compare(comparer as ItemCubeStack) ||
-			       (item as ItemStack).Compare(comparer as ItemStack);
+			return item.As<ItemCubeStack>().Compare(comparer.As<ItemCubeStack>()) ||
+			       item.As<ItemStack>().Compare(item.As<ItemStack>());
 		}
 
 		/// <summary>
@@ -157,9 +160,9 @@ namespace FortressCraft.Community
 			if (!item.IsStack())
 				return;
 			if (item.mType == ItemType.ItemCubeStack)
-				(item as ItemCubeStack).mnAmount += amount;
+				item.As<ItemCubeStack>().mnAmount += amount;
 			if (item.mType == ItemType.ItemStack)
-				(item as ItemStack).mnAmount += amount;
+				item.As<ItemStack>().mnAmount += amount;
 		}
 
 		/// <summary>
@@ -172,9 +175,9 @@ namespace FortressCraft.Community
 			if (!item.IsStack())
 				return;
 			if (item.mType == ItemType.ItemCubeStack)
-				(item as ItemCubeStack).mnAmount -= amount;
+					item.As<ItemCubeStack>().mnAmount -= amount;
 			if (item.mType == ItemType.ItemStack)
-				(item as ItemStack).mnAmount -= amount;
+				item.As<ItemStack>().mnAmount -= amount;
 		}
 
 		/// <summary>
@@ -187,9 +190,9 @@ namespace FortressCraft.Community
 			if (!item.IsStack())
 				return;
 			if (item.mType == ItemType.ItemCubeStack)
-				(item as ItemCubeStack).mnAmount = amount;
+				item.As<ItemCubeStack>().mnAmount = amount;
 			if (item.mType == ItemType.ItemStack)
-				(item as ItemStack).mnAmount = amount;
+				item.As<ItemStack>().mnAmount = amount;
 		}
 
 		/// <summary>
@@ -233,9 +236,9 @@ namespace FortressCraft.Community
 			switch (item.mType)
 			{
 				case ItemType.ItemCubeStack:
-					return (item as ItemCubeStack).mnAmount; // If it is original type of ItemCubeStack, it shouldn't be null
+					return item.As<ItemCubeStack>().mnAmount; // If it is original type of ItemCubeStack, it shouldn't be null
 				case ItemType.ItemStack:
-					return (item as ItemStack).mnAmount; // Read above note
+					return item.As<ItemStack>().mnAmount; // Read above note
 				default:
 					return 1; // All other original types can only have 1 original
 			}
@@ -273,7 +276,7 @@ namespace FortressCraft.Community
 		{
 			return items.Where(item =>
 			{
-				var cube = item as ItemCubeStack;
+				var cube = item.As<ItemCubeStack>();
 				if (cube == null)
 					return false;
 				return cube.mCubeType == cubeId && cube.mCubeValue == cubeValue;
@@ -291,8 +294,19 @@ namespace FortressCraft.Community
 			if (restraints.mType != ItemType.ItemCubeStack)
 				return items.GetItemCount(restraints.mnItemID);
 
-			var cube = restraints as ItemCubeStack;
+			var cube = restraints.As<ItemCubeStack>();
 			return items.GetItemCount(cube.mCubeType, cube.mCubeValue);
+		}
+
+		/// <summary>
+		///		Convert a ItemBase into a class that inherits ItemBase
+		/// </summary>
+		/// <typeparam name="TItemBase">Class that Inherits ItemBase</typeparam>
+		/// <param name="item">The entity to convert</param>
+		/// <returns>The entity as <see cref="TItemBase"/></returns>
+		public static TItemBase As<TItemBase>(this ItemBase item) where TItemBase : ItemBase
+		{
+			return item as TItemBase;
 		}
 
 		/// <summary>
