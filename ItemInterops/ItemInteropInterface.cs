@@ -8,13 +8,13 @@ namespace FortressCraft.Community.ItemInterops
 	/// </summary>
 	internal interface ItemInteropInterface
 	{
-		Boolean HasItems(SegmentEntity entity);
-		Boolean HasItem(SegmentEntity entity, ItemBase item);
-		Boolean HasItems(SegmentEntity entity, ItemBase item, out Int32 amount);
-		Boolean HasFreeSpace(SegmentEntity entity, UInt32 amount);
-		Int32 GetFreeSpace(SegmentEntity entity);
-		Boolean GiveItem(SegmentEntity entity, ItemBase item);
-		ItemBase TakeItem(SegmentEntity entity, ItemBase item);
-		ItemBase TakeAnyItem(SegmentEntity entity);
+		Boolean HasItems(SegmentEntity caller, SegmentEntity entity);
+		Boolean HasItem(SegmentEntity caller, SegmentEntity entity, ItemBase item);
+		Boolean HasItems(SegmentEntity caller, SegmentEntity entity, ItemBase item, out Int32 amount);
+		Boolean HasFreeSpace(SegmentEntity caller, SegmentEntity entity, UInt32 amount);
+		Int32 GetFreeSpace(SegmentEntity caller, SegmentEntity entity);
+		Boolean GiveItem(SegmentEntity caller, SegmentEntity entity, ItemBase item);
+		ItemBase TakeItem(SegmentEntity caller, SegmentEntity entity, ItemBase item);
+		ItemBase TakeAnyItem(SegmentEntity caller, SegmentEntity entity);
 	}
 }

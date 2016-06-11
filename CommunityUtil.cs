@@ -53,10 +53,13 @@ namespace FortressCraft.Community {
             bool ignore;
             List<SegmentEntity> list = center.CheckSurrounding<SegmentEntity>(out ignore);
 
-            for (int i = 0; i < list.Count; ++i) {
+			// TODO: Find a better solution to this
+			var itemInterop = new ItemInterop(center);
+
+			for (int i = 0; i < list.Count; ++i) {
                 // Special case - Conveyor belts should only be given items if they're facing away from the machine
                 if (list[i] is ConveyorEntity && center.IsConveyorFacingMe(list[i] as ConveyorEntity)) continue;
-                if (ItemInterop.GiveItem(list[i], item)) return true;
+                if (itemInterop.GiveItem(list[i], item)) return true;
             }
             return false;
         }
@@ -66,11 +69,14 @@ namespace FortressCraft.Community {
             bool ignore;
             List<SegmentEntity> list = center.CheckSurrounding<SegmentEntity>(out ignore);
 
-            ItemBase ret = null;
+			// TODO: Find a better solution to this
+			var itemInterop = new ItemInterop(center);
+
+			ItemBase ret = null;
             for (int i = 0; i < list.Count; ++i) {
                 // Special case - Conveyor belts should will only provide items if they're facing the machine
                 if (list[i] is ConveyorEntity && !center.IsConveyorFacingMe(list[i] as ConveyorEntity)) continue;
-                ret = ItemInterop.TakeAnyItem(list[i]);
+                ret = itemInterop.TakeAnyItem(list[i]);
                 if (ret != null) break;
             }
             return ret;
@@ -81,16 +87,19 @@ namespace FortressCraft.Community {
             bool ignore;
             List<SegmentEntity> list = center.CheckSurrounding<SegmentEntity>(out ignore);
 
+			// TODO: Find a better solution to this
+			var itemInterop = new ItemInterop(center);
+
             ItemBase ret = null;
             for (int i = 0; i < list.Count; ++i) {
                 if (list[i] is ConveyorEntity && !center.IsConveyorFacingMe(list[i] as ConveyorEntity)) continue;
-                ret = ItemInterop.TakeItem(list[i], item);
+                ret = itemInterop.TakeItem(list[i], item);
                 if (ret != null) break;
             }
             return ret;
         }
 
-        public static bool IsConveyorFacingMe(this MachineEntity center, ConveyorEntity conv)
+        public static bool IsConveyorFacingMe(this SegmentEntity center, ConveyorEntity conv)
         {
             long x = conv.mnX + (long)conv.mForwards.x;
             long y = conv.mnY + (long)conv.mForwards.y;
@@ -99,5 +108,11 @@ namespace FortressCraft.Community {
                 (y == center.mnY) &&
                 (z == center.mnZ);
         }
+
+		// Inverse of SegmentEntity.IsConveyorFacingMe. Seems a bit more natural, to Nikey~
+	    public static Boolean IsFacing(this ConveyorEntity conveyor, SegmentEntity entity)
+	    {
+		    return entity.IsConveyorFacingMe(conveyor);
+	    }
     }
 }

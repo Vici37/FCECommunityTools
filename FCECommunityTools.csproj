@@ -55,6 +55,7 @@
     <Compile Include="ItemInterops\ConveyorEntityInterop.cs" />
     <Compile Include="ItemInterops\ItemInteropInterface.cs" />
     <Compile Include="ItemInterops\StorageHopperInterop.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SegmentEntityUtil.cs" />
   </ItemGroup>

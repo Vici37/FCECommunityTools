@@ -4,14 +4,14 @@ namespace FortressCraft.Community.ItemInterops
 {
 	internal class ConveyorEntityInterop : ItemInteropInterface
 	{
-		public int GetFreeSpace(SegmentEntity entity)
+		public int GetFreeSpace(SegmentEntity caller, SegmentEntity entity)
 		{
 			var conveyor = entity.As<ConveyorEntity>();
 
 			return conveyor.mbReadyToConvey ? 1 : 0;
 		}
 
-		public bool GiveItem(SegmentEntity entity, ItemBase item)
+		public bool GiveItem(SegmentEntity caller, SegmentEntity entity, ItemBase item)
 		{
 			var conveyor = entity.As<ConveyorEntity>();
 			if (!this.IsReady(conveyor))
@@ -28,25 +28,25 @@ namespace FortressCraft.Community.ItemInterops
 			return true;
 		}
 
-		public bool HasFreeSpace(SegmentEntity entity, uint amount)
+		public bool HasFreeSpace(SegmentEntity caller, SegmentEntity entity, uint amount)
 		{
 			if (amount > 1)
 				return false;
-			return GetFreeSpace(entity) >= amount;
+			return this.GetFreeSpace(caller, entity) >= amount;
 		}
 
-		public bool HasItem(SegmentEntity entity, ItemBase item)
+		public bool HasItem(SegmentEntity caller, SegmentEntity entity, ItemBase item)
 		{
 			var conveyor = entity.As<ConveyorEntity>();
 			return this.HasItem(conveyor, item);
 		}
 
-		public bool HasItems(SegmentEntity entity)
+		public bool HasItems(SegmentEntity caller, SegmentEntity entity)
 		{
-			return GetFreeSpace(entity) > 0;
+			return GetFreeSpace(caller, entity) > 0;
 		}
 
-		public bool HasItems(SegmentEntity entity, ItemBase item, out int amount)
+		public bool HasItems(SegmentEntity caller, SegmentEntity entity, ItemBase item, out int amount)
 		{
 			amount = 0;
 			var conveyor = entity.As<ConveyorEntity>();
@@ -57,19 +57,19 @@ namespace FortressCraft.Community.ItemInterops
 			return true;
 		}
 
-		public ItemBase TakeAnyItem(SegmentEntity entity)
+		public ItemBase TakeAnyItem(SegmentEntity caller, SegmentEntity entity)
 		{
 			var conveyor = entity.As<ConveyorEntity>();
-			return this.TakeAnyItem(conveyor);
+			return this.TakeAnyItem(caller, conveyor);
 		}
 
-		public ItemBase TakeItem(SegmentEntity entity, ItemBase item)
+		public ItemBase TakeItem(SegmentEntity caller, SegmentEntity entity, ItemBase item)
 		{
 			var conveyor = entity.As<ConveyorEntity>();
 			if (!this.HasItem(conveyor, item))
 				return null;
 
-			return this.TakeAnyItem(conveyor);
+			return this.TakeAnyItem(caller, conveyor);
 		}
 
 		// Private methods to avoid double casts
@@ -91,9 +91,12 @@ namespace FortressCraft.Community.ItemInterops
 			return conveyor.mCarriedCube == cube.mCubeType && conveyor.mCarriedValue == cube.mCubeValue;
 		}
 
-		private ItemBase TakeAnyItem(ConveyorEntity conveyor)
+		private ItemBase TakeAnyItem(SegmentEntity caller, ConveyorEntity conveyor)
 		{
 			if (this.IsReady(conveyor))
+				return null;
+
+			if (!conveyor.IsFacing(caller))
 				return null;
 
 			ItemBase returnItem = conveyor.mCarriedCube != 0

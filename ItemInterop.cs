@@ -10,19 +10,28 @@ namespace FortressCraft.Community
 	/// <summary>
 	///		A class that provides Interopability between Storage and Machines for Pre-StorageInterface mods
 	/// </summary>
-	public static class ItemInterop
+	public class ItemInterop
 	{
 		// Not truly readonly, it can be accessed and manually added to via Reflection
 		// But if someone is that desparate, than whatever.
 		private static readonly Dictionary<Type, ItemInteropInterface> _supportedTypes;
+
+		private readonly MachineEntity _caller;
 
 		static ItemInterop()
 		{
 			_supportedTypes = new Dictionary<Type, ItemInteropInterface>
 			{
 				{ typeof (StorageHopper), new StorageHopperInterop() },
-                { typeof (ConveyorEntity), new ConveyorEntityInterop() }
+				{ typeof (ConveyorEntity), new ConveyorEntityInterop() }
 			};
+		}
+
+		public ItemInterop(MachineEntity caller)
+		{
+			if (caller == null)
+				throw new ArgumentNullException(nameof(caller));
+			this._caller = caller;
 		}
 		
 		private static Type SupportedType(SegmentEntity entity)
@@ -38,7 +47,7 @@ namespace FortressCraft.Community
 		/// </summary>
 		/// <param name="entity">A <see cref="SegmentEntity">SegmentEntity</see></param>
 		/// <returns>True if the <see cref="SegmentEntity">entity</see> has any items, false otherwise</returns>
-		public static Boolean HasItems(SegmentEntity entity)
+		public Boolean HasItems(SegmentEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -54,10 +63,10 @@ namespace FortressCraft.Community
 			}
 
 			var interop = _supportedTypes[type];
-			return interop.HasItems(entity);
+			return interop.HasItems(this._caller, entity);
 		}
 
-		public static Boolean HasItem(SegmentEntity entity, ItemBase item)
+		public Boolean HasItem(SegmentEntity entity, ItemBase item)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -65,10 +74,10 @@ namespace FortressCraft.Community
 				throw new ArgumentNullException(nameof(item));
 
 			Int32 amount;
-			return HasItems(entity, item, out amount);
+			return this.HasItems(entity, item, out amount);
 		}
 
-		public static Boolean HasItems(SegmentEntity entity, ItemBase item, out Int32 amount)
+		public Boolean HasItems(SegmentEntity entity, ItemBase item, out Int32 amount)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -87,10 +96,10 @@ namespace FortressCraft.Community
 			}
 
 			var interop = _supportedTypes[type];
-			return interop.HasItems(entity, item, out amount);
+			return interop.HasItems(this._caller, entity, item, out amount);
 		}
 
-		public static Boolean HasCapacity(SegmentEntity entity, UInt32 amount)
+		public Boolean HasCapacity(SegmentEntity entity, UInt32 amount)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -106,10 +115,10 @@ namespace FortressCraft.Community
 			}
 
 			var interop = _supportedTypes[type];
-			return interop.HasFreeSpace(entity, amount);
+			return interop.HasFreeSpace(this._caller, entity, amount);
 		}
 
-		public static Int32 GetCapacity(SegmentEntity entity)
+		public Int32 GetCapacity(SegmentEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -125,7 +134,7 @@ namespace FortressCraft.Community
 			}
 
 			var interop = _supportedTypes[type];
-			return interop.GetFreeSpace(entity);
+			return interop.GetFreeSpace(this._caller, entity);
 		}
 
 		/// <summary>
@@ -134,7 +143,7 @@ namespace FortressCraft.Community
 		/// <param name="entity"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public static Boolean GiveItem(SegmentEntity entity, ItemBase item)
+		public Boolean GiveItem(SegmentEntity entity, ItemBase item)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -151,7 +160,7 @@ namespace FortressCraft.Community
 				return iEntity.GiveItem(item);
 			}
 			var interop = _supportedTypes[type];
-			return interop.GiveItem(entity, item);
+			return interop.GiveItem(this._caller, entity, item);
 		}
 
 		/// <summary>
@@ -160,7 +169,7 @@ namespace FortressCraft.Community
 		/// <param name="entity">The <see cref="SegmentEntity">entity</see> to try and get the <see cref="ItemBase">item</see> from</param>
 		/// <param name="item">The <see cref="ItemBase">ItemBase</see> with details of what to retrrieve</param>
 		/// <returns></returns>
-		public static ItemBase TakeItem(SegmentEntity entity, ItemBase item)
+		public ItemBase TakeItem(SegmentEntity entity, ItemBase item)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -180,7 +189,7 @@ namespace FortressCraft.Community
 				}
 
 				var interop = _supportedTypes[type];
-				return interop.TakeItem(entity, item);
+				return interop.TakeItem(this._caller, entity, item);
 			}
 			catch(NotImplementedException)
 			{
@@ -193,7 +202,7 @@ namespace FortressCraft.Community
 		/// </summary>
 		/// <param name="entity">The <see cref="SegmentEntity">entity</see> to get a <see cref="ItemBase">item</see> from</param>
 		/// <returns>A <see cref="ItemBase">item</see>, or <c>NULL</c></returns>
-		public static ItemBase TakeAnyItem(SegmentEntity entity)
+		public ItemBase TakeAnyItem(SegmentEntity entity)
 		{
 			if (entity == null)
 				throw new ArgumentNullException(nameof(entity));
@@ -211,7 +220,7 @@ namespace FortressCraft.Community
 				}
 
 				var interop = _supportedTypes[type];
-				return interop.TakeAnyItem(entity);
+				return interop.TakeAnyItem(this._caller, entity);
 			}
 			catch (NotImplementedException)
 			{
