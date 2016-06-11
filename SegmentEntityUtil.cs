@@ -21,7 +21,24 @@ namespace FortressCraft.Community
 		{
 			return entity as TSegmentEntity;
 		}
-		
+
+		// Outputs the SegmentEntity's coordinates as a string, handy for debugging, maybe
+
+		public static string GetPosString(this SegmentEntity ent)
+		{
+			return "[" + ent.mnX + ", " + ent.mnY + ", " + ent.mnZ + "]";
+		}
+
+		public static bool IsConveyorFacingMe(this SegmentEntity center, ConveyorEntity conv)
+		{
+			long x = conv.mnX + (long)conv.mForwards.x;
+			long y = conv.mnY + (long)conv.mForwards.y;
+			long z = conv.mnZ + (long)conv.mForwards.z;
+			return (x == center.mnX) &&
+			       (y == center.mnY) &&
+			       (z == center.mnZ);
+		}
+
 		public static KeyValuePair<UInt16, UInt16> GetCubeData(this SegmentEntity entity, string dataName)
 		{
 			UInt16 type;
@@ -49,6 +66,5 @@ namespace FortressCraft.Community
 
 			return true;
 		}
-
 	}
 }

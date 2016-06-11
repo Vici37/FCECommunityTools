@@ -48,7 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunityItemInterface.cs" />
-    <Compile Include="CommunityUtil.cs" />
+    <Compile Include="MachineEntityUtil.cs" />
+    <Compile Include="ConveyorEntityUtil.cs" />
     <Compile Include="GameObjectUtil.cs" />
     <Compile Include="ItemBaseUtil.cs" />
     <Compile Include="ItemInterop.cs" />

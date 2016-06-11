@@ -59,10 +59,10 @@
 		/// <returns>An ItemBase if the requested Item was found, otherwise null</returns>
 		ItemBase TakeItem(ItemBase item);
 
-        /// <summary>
-        ///     Attempts to take any item from a Storage Medium
-        /// </summary>
-        /// <returns>An ItemBase if there's something to return, or null if empty</returns>
-        ItemBase TakeAnyItem();
+		/// <summary>
+		///     Attempts to take any item from a Storage Medium
+		/// </summary>
+		/// <returns>An ItemBase if there's something to return, or null if empty</returns>
+		ItemBase TakeAnyItem();
 	}
 }
