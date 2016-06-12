@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace FortressCraft.Community
+namespace FortressCraft.Community.Utilities
 {
 	/// <summary>
 	///		Extension Methods and Helpers for the SegmentEntity class
