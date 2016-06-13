@@ -48,17 +48,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommunityItemInterface.cs" />
-    <Compile Include="MachineEntityUtil.cs" />
-    <Compile Include="ConveyorEntityUtil.cs" />
-    <Compile Include="GameObjectUtil.cs" />
-    <Compile Include="ItemBaseUtil.cs" />
+    <Compile Include="Utilities\Collections\ItemBaseCollectionUtils.cs" />
+    <Compile Include="Utilities\MachineEntityUtil.cs" />
+    <Compile Include="Utilities\ConveyorEntityUtil.cs" />
+    <Compile Include="Utilities\GameObjectUtil.cs" />
+    <Compile Include="Utilities\ItemBaseUtil.cs" />
+    <Compile Include="Utilities\SegmentEntityUtil.cs" />
     <Compile Include="ItemInterop.cs" />
     <Compile Include="ItemInterops\ConveyorEntityInterop.cs" />
     <Compile Include="ItemInterops\ItemInteropInterface.cs" />
     <Compile Include="ItemInterops\StorageHopperInterop.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SegmentEntityUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
