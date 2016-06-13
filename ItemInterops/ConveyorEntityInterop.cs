@@ -1,9 +1,15 @@
-﻿using FortressCraft.Community.Utilities;
+﻿using System;
+using System.Reflection;
+using FortressCraft.Community.Utilities;
 
 namespace FortressCraft.Community.ItemInterops
 {
 	internal class ConveyorEntityInterop : ItemInteropInterface
 	{
+		private static MethodInfo _convertMethod;
+		private static FieldInfo _outState;
+		private static FieldInfo _nextState;
+
 		public int GetFreeSpace(SegmentEntity caller, SegmentEntity entity)
 		{
 			var conveyor = entity.As<ConveyorEntity>();
@@ -43,7 +49,8 @@ namespace FortressCraft.Community.ItemInterops
 
 		public bool HasItems(SegmentEntity caller, SegmentEntity entity)
 		{
-			return GetFreeSpace(caller, entity) > 0;
+			var conveyor = entity.As<ConveyorEntity>();
+			return this.IsReady(conveyor) && !(conveyor.mrCarryTimer > 0);
 		}
 
 		public bool HasItems(SegmentEntity caller, SegmentEntity entity, ItemBase item, out int amount)
@@ -84,6 +91,9 @@ namespace FortressCraft.Community.ItemInterops
 			if (this.IsReady(conveyor))
 				return false;
 
+			if (conveyor.mrCarryTimer > 0)
+				return false;
+
 			if (item.mType != ItemType.ItemCubeStack)
 				return item.CompareDeep(conveyor.mCarriedItem);
 
@@ -99,6 +109,12 @@ namespace FortressCraft.Community.ItemInterops
 			if (!conveyor.IsFacing(caller))
 				return null;
 
+			// TODO: Wait for conveyor to give us the item
+			if (conveyor.mrCarryTimer > 0)
+				return null;
+			// TODO: Convert item from crafting conveyors
+			this.ConvertItem(conveyor);
+
 			ItemBase returnItem = conveyor.mCarriedCube != 0
 				? ItemManager.SpawnCubeStack(conveyor.mCarriedCube, conveyor.mCarriedValue, 1)
 				: conveyor.mCarriedItem;
@@ -111,5 +127,24 @@ namespace FortressCraft.Community.ItemInterops
 			conveyor.FinaliseOffloadingCargo();
 			return returnItem;
 		}
+
+		private void ConvertItem(ConveyorEntity conveyor)
+		{
+			if (_convertMethod == null)
+				_convertMethod = typeof (ConveyorEntity).GetMethod("ConvertCargo", BindingFlags.NonPublic);
+			_convertMethod?.Invoke(conveyor, new object[0]);
+
+			if (_outState == null)
+			{
+				var eAnimState = typeof(ConveyorEntity).GetNestedType("eAnimState", BindingFlags.NonPublic);
+				_outState = eAnimState.GetField("Out");
+			}
+
+			if (_nextState == null)
+				_nextState = typeof (ConveyorEntity).GetField("meNextAnimState", BindingFlags.NonPublic | BindingFlags.Instance);
+				
+			_nextState.SetValue(conveyor, (Enum) _outState.GetValue(null));
+		}
+
 	}
 }
