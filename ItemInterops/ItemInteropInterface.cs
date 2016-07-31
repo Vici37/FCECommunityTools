@@ -6,6 +6,7 @@ namespace FortressCraft.Community.ItemInterops
 	///		This interface needs to mimic <see cref="CommunityItemInterface">CommunityItemInterface</see>'s methods,
 	///		but take a <see cref="SegmentEntity">SegmentEntity</see> as the first param.
 	/// </summary>
+	[Obsolete("Official Item Interfaces are released, use those. http://steamcommunity.com/app/254200/discussions/1/364040166673615738/", true)]
 	internal interface ItemInteropInterface
 	{
 		Boolean HasItems(SegmentEntity entity);

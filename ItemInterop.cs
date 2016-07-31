@@ -10,6 +10,7 @@ namespace FortressCraft.Community
 	/// <summary>
 	///		A class that provides Interopability between Storage and Machines for Pre-StorageInterface mods
 	/// </summary>
+	[Obsolete("Official Item Interfaces are released, use those. http://steamcommunity.com/app/254200/discussions/1/364040166673615738/ (ItemInterop no longer required, All machines use official Item Interfaces~)", true)]
 	public static class ItemInterop
 	{
 		// Not truly readonly, it can be accessed and manually added to via Reflection

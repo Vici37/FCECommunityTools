@@ -48,7 +48,8 @@ namespace FortressCraft.Community.Utilities {
             return "[" + ent.mnX + ", " + ent.mnY + ", " + ent.mnZ + "]";
         }
 
-        public static bool GiveToSurrounding(this MachineEntity center, ItemBase item)
+		[Obsolete("Requires updating to support official item interface", true)]
+		public static bool GiveToSurrounding(this MachineEntity center, ItemBase item)
         {
             bool ignore;
             List<SegmentEntity> list = center.CheckSurrounding<SegmentEntity>(out ignore);
@@ -61,7 +62,8 @@ namespace FortressCraft.Community.Utilities {
             return false;
         }
 
-        public static ItemBase TakeFromSurrounding(this MachineEntity center)
+		[Obsolete("Requires updating to support official item interface", true)]
+		public static ItemBase TakeFromSurrounding(this MachineEntity center)
         {
             bool ignore;
             List<SegmentEntity> list = center.CheckSurrounding<SegmentEntity>(out ignore);
@@ -76,7 +78,8 @@ namespace FortressCraft.Community.Utilities {
             return ret;
         }
 
-        public static ItemBase TakeFromSurrounding(this MachineEntity center, ItemBase item)
+		[Obsolete("Requires updating to support official item interface", true)]
+		public static ItemBase TakeFromSurrounding(this MachineEntity center, ItemBase item)
         {
             bool ignore;
             List<SegmentEntity> list = center.CheckSurrounding<SegmentEntity>(out ignore);

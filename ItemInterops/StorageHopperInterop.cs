@@ -4,6 +4,7 @@ using FortressCraft.Community.Utilities;
 namespace FortressCraft.Community.ItemInterops
 {
 	// Internal class, to ensure that only we, the community library, use it.
+	[Obsolete("Official Item Interfaces are released, use those. http://steamcommunity.com/app/254200/discussions/1/364040166673615738/", true)]
 	internal class StorageHopperInterop : ItemInteropInterface
 	{
 		public Boolean HasItems(SegmentEntity entity)

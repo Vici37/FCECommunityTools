@@ -5,6 +5,7 @@
 	/// <summary>
 	///		A community interface to allow cross-mod communication for item storage
 	/// </summary>
+	[Obsolete("Official Item Interfaces are released, use those. http://steamcommunity.com/app/254200/discussions/1/364040166673615738/", true)]
 	public interface CommunityItemInterface
 	{
 		/// <summary>

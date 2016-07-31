@@ -1,7 +1,9 @@
-﻿using FortressCraft.Community.Utilities;
+﻿using System;
+using FortressCraft.Community.Utilities;
 
 namespace FortressCraft.Community.ItemInterops {
-    internal class ConveyorEntityInterop : ItemInteropInterface {
+	[Obsolete("Official Item Interfaces are released, use those. http://steamcommunity.com/app/254200/discussions/1/364040166673615738/", true)]
+	internal class ConveyorEntityInterop : ItemInteropInterface {
         public int GetFreeSpace(SegmentEntity entity) {
             var conveyor = entity.As<ConveyorEntity>();
 
